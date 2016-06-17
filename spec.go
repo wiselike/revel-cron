@@ -70,7 +70,7 @@ func (s *SpecSchedule) Next(t time.Time) time.Time {
 	// If no time is found within five years, return zero.
 	yearLimit := t.Year() + 5
 
-WRAP:
+Wrap:
 	if t.Year() > yearLimit {
 		return time.Time{}
 	}
@@ -88,7 +88,7 @@ WRAP:
 
 		// Wrapped around.
 		if t.Month() == time.January {
-			goto WRAP
+			goto Wrap
 		}
 	}
 
@@ -101,7 +101,7 @@ WRAP:
 		t = t.AddDate(0, 0, 1)
 
 		if t.Day() == 1 {
-			goto WRAP
+			goto Wrap
 		}
 	}
 
@@ -113,7 +113,7 @@ WRAP:
 		t = t.Add(1 * time.Hour)
 
 		if t.Hour() == 0 {
-			goto WRAP
+			goto Wrap
 		}
 	}
 
@@ -125,7 +125,7 @@ WRAP:
 		t = t.Add(1 * time.Minute)
 
 		if t.Minute() == 0 {
-			goto WRAP
+			goto Wrap
 		}
 	}
 
@@ -137,7 +137,7 @@ WRAP:
 		t = t.Add(1 * time.Second)
 
 		if t.Second() == 0 {
-			goto WRAP
+			goto Wrap
 		}
 	}
 
