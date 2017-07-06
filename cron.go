@@ -48,6 +48,17 @@ type Entry struct {
 
 	// The Job to run.
 	Job Job
+
+}
+
+// Runs the entry, if cron is running assign next scheduled time
+func (e *Entry) run(c *Cron,now time.Time) {
+	// It is ok to use a nil pointer with the cron function runWithRecovery
+	go c.runWithRecovery(e.Job)
+	e.Prev = now
+	if c.running {
+		e.Next = e.Schedule.Next(now)
+	}
 }
 
 // byTime is a wrapper for sorting the entry array by time
@@ -131,6 +142,14 @@ func (c *Cron) Start() {
 	go c.run()
 }
 
+// Runs a single entry, if entry was scheduled, reschedules the entry to run at next interval
+// if cron is running
+func (c *Cron) RunEntry(entryIndex int) {
+	if entryIndex>=0 && entryIndex<len(c.entries) {
+		c.entries[entryIndex].run(c, time.Now())
+	}
+}
+
 func (c *Cron) runWithRecovery(j Job) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -172,9 +191,7 @@ func (c *Cron) run() {
 				if e.Next != effective {
 					break
 				}
-				go c.runWithRecovery(e.Job)
-				e.Prev = e.Next
-				e.Next = e.Schedule.Next(now)
+				e.run(c, now)
 			}
 			continue
 
