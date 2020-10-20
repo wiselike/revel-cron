@@ -47,11 +47,10 @@ type Entry struct {
 
 	// The Job to run.
 	Job Job
-
 }
 
-// Runs the entry, if cron is running assign next scheduled time
-func (e *Entry) run(c *Cron,now time.Time) {
+// Runs the entry, if cron is running assign next scheduled time.
+func (e *Entry) run(c *Cron, now time.Time) {
 	// It is ok to use a nil pointer with the cron function runWithRecovery
 	go c.runWithRecovery(e.Job)
 	e.Prev = now
@@ -97,7 +96,7 @@ func NewWithLocation(location *time.Location) *Cron {
 	}
 }
 
-// A wrapper that turns a func() into a cron.Job
+// A wrapper that turns a func() into a cron.Job.
 type FuncJob func()
 
 func (f FuncJob) Run() { f() }
@@ -141,7 +140,7 @@ func (c *Cron) Entries() []*Entry {
 	return c.entrySnapshot()
 }
 
-// Location gets the time zone location
+// Location gets the time zone location.
 func (c *Cron) Location() *time.Location {
 	return c.location
 }
@@ -156,9 +155,9 @@ func (c *Cron) Start() {
 }
 
 // Runs a single entry, if entry was scheduled, reschedules the entry to run at next interval
-// if cron is running
+// if cron is running.
 func (c *Cron) RunEntry(entryIndex int) {
-	if entryIndex>=0 && entryIndex<len(c.entries) {
+	if entryIndex >= 0 && entryIndex < len(c.entries) {
 		c.entries[entryIndex].run(c, time.Now())
 	}
 }
@@ -215,7 +214,7 @@ func (c *Cron) run() {
 					if e.Next.After(now) || e.Next.IsZero() {
 						break
 					}
-				e.run(c, now)
+					e.run(c, now)
 				}
 
 			case newEntry := <-c.add:
@@ -238,7 +237,7 @@ func (c *Cron) run() {
 	}
 }
 
-// Logs an error to stderr or to the configured error log
+// Logs an error to stderr or to the configured error log.
 func (c *Cron) logf(format string, args ...interface{}) {
 	if c.ErrorLog != nil {
 		c.ErrorLog.Printf(format, args...)
@@ -270,7 +269,7 @@ func (c *Cron) entrySnapshot() []*Entry {
 	return entries
 }
 
-// now returns current time in c location
+// now returns current time in c location.
 func (c *Cron) now() time.Time {
 	return time.Now().In(c.location)
 }

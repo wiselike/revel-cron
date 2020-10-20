@@ -15,6 +15,7 @@ type bounds struct {
 }
 
 // The bounds for each field.
+//nolint:gochecknoglobals
 var (
 	seconds = bounds{0, 59, nil}
 	minutes = bounds{0, 59, nil}
